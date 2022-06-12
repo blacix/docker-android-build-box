@@ -28,9 +28,9 @@ ENV ANDROID_SDK_TOOLS_VERSION="8512546"
 ENV NODE_VERSION="14.x"
 
 # Set locale
-ENV LANG="en_US.UTF-8" \
-    LANGUAGE="en_US.UTF-8" \
-    LC_ALL="en_US.UTF-8"
+# ENV LANG="en_US.UTF-8" \
+#     LANGUAGE="en_US.UTF-8" \
+#     LC_ALL="en_US.UTF-8"
 
 # RUN apt-get clean && \
 #     apt-get update -qq && \
@@ -167,7 +167,7 @@ RUN echo "platform tools" && \
     yes | $ANDROID_SDK_MANAGER \
         "platform-tools" > /dev/null
 
-RUN echo "build tools 26-30" && \
+RUN echo "build tools 33.0.0" && \
     . /etc/jdk.env && \
     yes | $ANDROID_SDK_MANAGER \
         "build-tools;33.0.0" \
