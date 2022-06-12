@@ -1,6 +1,6 @@
 FROM ubuntu:20.04
 
-RUN uname -a && uname -m
+# RUN uname -a && uname -m
 
 # ANDROID_HOME is deprecated
 ENV ANDROID_HOME="/opt/android-sdk" \
@@ -206,11 +206,11 @@ RUN echo "NDK" && \
     ln -sv $ANDROID_HOME/ndk/${NDK_VERSION} ${ANDROID_NDK}
 
 # List sdk and ndk directory content
-RUN ls -l $ANDROID_HOME && \
-    ls -l $ANDROID_HOME/ndk && \
-    ls -l $ANDROID_HOME/ndk/*
+# RUN ls -l $ANDROID_HOME && \
+#     ls -l $ANDROID_HOME/ndk && \
+#     ls -l $ANDROID_HOME/ndk/*
 
-RUN du -sh $ANDROID_HOME
+# RUN du -sh $ANDROID_HOME
 
 # RUN echo "Flutter sdk" && \
 #     if [ "$(uname -m)" != "x86_64" ]; then echo "Flutter only support Linux x86 64bit. skip for $(uname -m)"; exit 0; fi && \
@@ -232,7 +232,7 @@ RUN mkdir -p /var/lib/jenkins/workspace && \
     chmod 777 /var/lib/jenkins/workspace && \
     chmod -R 775 $ANDROID_HOME
 
-COPY Gemfile /Gemfile
+# COPY Gemfile /Gemfile
 
 # RUN echo "fastlane" && \
 #     cd / && \
