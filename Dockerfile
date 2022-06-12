@@ -1,7 +1,5 @@
 FROM ubuntu:20.04
 
-# RUN uname -a && uname -m
-
 # ANDROID_HOME is deprecated
 ENV ANDROID_HOME="/opt/android-sdk" \
     ANDROID_SDK_HOME="/opt/android-sdk" \
@@ -21,21 +19,10 @@ RUN JDK_PLATFORM=$(if [ "$(uname -m)" = "aarch64" ]; then echo "arm64"; else ech
 ENV TZ=America/Los_Angeles
 
 # Get the latest version from https://developer.android.com/studio/index.html
-# "4333796"
 ENV ANDROID_SDK_TOOLS_VERSION="8512546"
 
 # nodejs version
 ENV NODE_VERSION="14.x"
-
-# Set locale
-# ENV LANG="en_US.UTF-8" \
-#     LANGUAGE="en_US.UTF-8" \
-#     LC_ALL="en_US.UTF-8"
-
-# RUN apt-get clean && \
-#     apt-get update -qq && \
-#     apt-get install -qq -y apt-utils locales && \
-#     locale-gen $LANG
 
 ENV DEBIAN_FRONTEND="noninteractive" \
     TERM=dumb \
@@ -48,42 +35,14 @@ WORKDIR /tmp
         
 # Installing packages
 RUN dpkg --add-architecture i386 && apt-get update -qq > /dev/null && \
-    # apt-get install -qq locales > /dev/null && \
-    # locale-gen "$LANG" > /dev/null && \
     apt-get install -qq --no-install-recommends \
         libc6:i386 libncurses5:i386 libstdc++6:i386 lib32z1 libbz2-1.0:i386 \
-        # autoconf \
         build-essential \
         cmake \
-        # curl \
-        # file \
-        # git \
-        # gpg-agent \
-        # less \
-        # libc6-dev \
-        # libgmp-dev \
-        # libmpc-dev \
-        # libmpfr-dev \
-        # libxslt-dev \
-        # libxml2-dev \
-        # m4 \
-        # ncurses-dev \
-        # ocaml \
-        # openjdk-8-jdk \
         openjdk-11-jdk \
-        # openssh-client \
-        # pkg-config \
-        # ruby-full \
-        # software-properties-common \
-        # tzdata \
         unzip \
-        # vim-tiny \
         wget \
-        # zip \
         # zipalign \
-        # s3cmd \
-        # python \
-        # zlib1g-dev > /dev/null && \
         && \
     echo "JVM directories: `ls -l /usr/lib/jvm/`" && \
     . /etc/jdk.env && \
@@ -91,31 +50,6 @@ RUN dpkg --add-architecture i386 && apt-get update -qq > /dev/null && \
     java -version && \
     echo "set timezone" && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
-    # echo "nodejs, npm, cordova, ionic, react-native" && \
-    # curl -sL -k https://deb.nodesource.com/setup_${NODE_VERSION} \
-    #     | bash - > /dev/null && \
-    # apt-get install -qq nodejs > /dev/null && \
-    # curl -sS -k https://dl.yarnpkg.com/debian/pubkey.gpg \
-    #     | apt-key add - > /dev/null && \
-    # echo "deb https://dl.yarnpkg.com/debian/ stable main" \
-    #     | tee /etc/apt/sources.list.d/yarn.list > /dev/null && \
-    # apt-get update -qq > /dev/null && \
-    # apt-get install -qq yarn > /dev/null && \
-    # rm -rf /var/lib/apt/lists/ && \
-    # npm install --quiet -g npm > /dev/null && \
-    # npm install --quiet -g \
-    #     bower \
-    #     cordova \
-    #     eslint \
-    #     gulp \
-    #     ionic \
-    #     jshint \
-    #     karma-cli \
-    #     mocha \
-    #     node-gyp \
-    #     npm-check-updates \
-    #     react-native-cli > /dev/null && \
-    # npm cache clean --force > /dev/null && \
     apt-get -y clean && apt-get -y autoremove && rm -rf /var/lib/apt/lists/* && \
     rm -rf /tmp/* /var/tmp/*
 
@@ -147,25 +81,18 @@ RUN . /etc/jdk.env && \
     $ANDROID_SDK_MANAGER --list > packages.txt && \
     cat packages.txt | grep -v '='
 
-#
+
 # https://developer.android.com/studio/command-line/sdkmanager.html
-#
 RUN echo "platforms" && \
     . /etc/jdk.env && \
     yes | $ANDROID_SDK_MANAGER \
         # "platforms;android-32" \
         "platforms;android-31" \
-        # "platforms;android-30" \
-        # "platforms;android-29" \
-        # "platforms;android-28" \
-        # "platforms;android-27" \
-        # "platforms;android-26" \
         > /dev/null
 
 RUN echo "platform tools" && \
     . /etc/jdk.env && \
-    yes | $ANDROID_SDK_MANAGER \
-        "platform-tools" > /dev/null
+    yes | $ANDROID_SDK_MANAGER "platform-tools" > /dev/null
 
 RUN echo "build tools 33.0.0" && \
     . /etc/jdk.env && \
@@ -189,10 +116,6 @@ RUN echo "emulator" && \
     yes | $ANDROID_SDK_MANAGER "emulator" > /dev/null && \
     $ANDROID_SDK_MANAGER --uninstall emulator
 
-# ndk-bundle does exist on arm64
-# RUN echo "NDK" && \
-#     yes | $ANDROID_SDK_MANAGER "ndk-bundle" > /dev/null
-
 RUN echo "bundletool" && \
     wget -q https://github.com/google/bundletool/releases/download/1.9.1/bundletool-all-1.9.1.jar -O bundletool.jar && \
     mv bundletool.jar $ANDROID_SDK_HOME/cmdline-tools/latest/
@@ -205,12 +128,6 @@ RUN echo "NDK" && \
     yes | $ANDROID_SDK_MANAGER "$NDK" > /dev/null && \
     ln -sv $ANDROID_HOME/ndk/${NDK_VERSION} ${ANDROID_NDK}
 
-# List sdk and ndk directory content
-# RUN ls -l $ANDROID_HOME && \
-#     ls -l $ANDROID_HOME/ndk && \
-#     ls -l $ANDROID_HOME/ndk/*
-
-# RUN du -sh $ANDROID_HOME
 
 # RUN echo "Flutter sdk" && \
 #     if [ "$(uname -m)" != "x86_64" ]; then echo "Flutter only support Linux x86 64bit. skip for $(uname -m)"; exit 0; fi && \
@@ -231,15 +148,6 @@ RUN mkdir -p /var/lib/jenkins/workspace && \
     chmod 777 /home/jenkins && \
     chmod 777 /var/lib/jenkins/workspace && \
     chmod -R 775 $ANDROID_HOME
-
-# COPY Gemfile /Gemfile
-
-# RUN echo "fastlane" && \
-#     cd / && \
-#     gem install bundler --quiet --no-document > /dev/null && \
-#     mkdir -p /.fastlane && \
-#     chmod 777 /.fastlane && \
-#     bundle install --quiet
 
 # Add jenv to control which version of java to use, default to 11.
 # RUN git clone https://github.com/jenv/jenv.git ~/.jenv && \
