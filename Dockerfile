@@ -181,11 +181,13 @@ RUN echo "build tools 26-30" && \
 
 # seems there is no emulator on arm64
 # Warning: Failed to find package emulator
+# If emulator is not isntalled, as the licencse is accepted,gradle will try to install it on the first build.
+# workaround: install it then remove it.
 RUN echo "emulator" && \
     if [ "$(uname -m)" != "x86_64" ]; then echo "emulator only support Linux x86 64bit. skip for $(uname -m)"; exit 0; fi && \
     . /etc/jdk.env && \
-    yes | "$ANDROID_HOME"/cmdline-tools/latest/bin/sdkmanager "emulator" > /dev/null
-    # "$ANDROID_HOME"/cmdline-tools/latest/bin/sdkmanager --uninstall emulator
+    yes | "$ANDROID_HOME"/cmdline-tools/latest/bin/sdkmanager "emulator" > /dev/null && \
+    "$ANDROID_HOME"/cmdline-tools/latest/bin/sdkmanager --uninstall emulator
 
 # ndk-bundle does exist on arm64
 # RUN echo "NDK" && \
