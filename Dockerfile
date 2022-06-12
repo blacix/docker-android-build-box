@@ -9,6 +9,7 @@ ENV ANDROID_HOME="/opt/android-sdk" \
     ANDROID_NDK="/opt/android-sdk/ndk/current" \
     ANDROID_NDK_ROOT="/opt/android-sdk/ndk/current" \
     FLUTTER_HOME="/opt/flutter"
+ENV ANDROID_SDK_MANAGER=${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager
 
 # support amd64 and arm64
 RUN JDK_PLATFORM=$(if [ "$(uname -m)" = "aarch64" ]; then echo "arm64"; else echo "amd64"; fi) && \
@@ -142,12 +143,12 @@ RUN mkdir --parents "$ANDROID_HOME/.android/" && \
     echo '### User Sources for Android SDK Manager' > \
         "$ANDROID_HOME/.android/repositories.cfg" && \
     . /etc/jdk.env && \
-    yes | "$ANDROID_HOME"/cmdline-tools/latest/bin/sdkmanager --licenses
+    yes | $ANDROID_SDK_MANAGER --licenses
 
 # List all available packages.
 # redirect to a temp file `packages.txt` for later use and avoid show progress
 RUN . /etc/jdk.env && \
-    "$ANDROID_HOME"/cmdline-tools/latest/bin/sdkmanager --list > packages.txt && \
+    $ANDROID_SDK_MANAGER --list > packages.txt && \
     cat packages.txt | grep -v '='
 
 #
@@ -155,7 +156,7 @@ RUN . /etc/jdk.env && \
 #
 RUN echo "platforms" && \
     . /etc/jdk.env && \
-    yes | "$ANDROID_HOME"/cmdline-tools/latest/bin/sdkmanager \
+    yes | $ANDROID_SDK_MANAGER \
         # "platforms;android-32" \
         "platforms;android-31" \
         # "platforms;android-30" \
@@ -167,12 +168,12 @@ RUN echo "platforms" && \
 
 RUN echo "platform tools" && \
     . /etc/jdk.env && \
-    yes | "$ANDROID_HOME"/cmdline-tools/latest/bin/sdkmanager \
+    yes | $ANDROID_SDK_MANAGER \
         "platform-tools" > /dev/null
 
 RUN echo "build tools 26-30" && \
     . /etc/jdk.env && \
-    yes | "$ANDROID_HOME"/cmdline-tools/latest/bin/sdkmanager \
+    yes | $ANDROID_SDK_MANAGER \
         "build-tools;33.0.0" \
         # "build-tools;32.0.0" "build-tools;31.0.0" \
         # "build-tools;30.0.0" "build-tools;30.0.2" "build-tools;30.0.3" \
@@ -189,12 +190,12 @@ RUN echo "build tools 26-30" && \
 RUN echo "emulator" && \
     if [ "$(uname -m)" != "x86_64" ]; then echo "emulator only support Linux x86 64bit. skip for $(uname -m)"; exit 0; fi && \
     . /etc/jdk.env && \
-    yes | "$ANDROID_HOME"/cmdline-tools/latest/bin/sdkmanager "emulator" > /dev/null && \
-    "$ANDROID_HOME"/cmdline-tools/latest/bin/sdkmanager --uninstall emulator
+    yes | $ANDROID_SDK_MANAGER "emulator" > /dev/null && \
+    $ANDROID_SDK_MANAGER --uninstall emulator
 
 # ndk-bundle does exist on arm64
 # RUN echo "NDK" && \
-#     yes | "$ANDROID_HOME"/cmdline-tools/latest/bin/sdkmanager "ndk-bundle" > /dev/null
+#     yes | $ANDROID_SDK_MANAGER "ndk-bundle" > /dev/null
 
 RUN echo "bundletool" && \
     wget -q https://github.com/google/bundletool/releases/download/1.9.1/bundletool-all-1.9.1.jar -O bundletool.jar && \
@@ -205,7 +206,7 @@ RUN echo "NDK" && \
     NDK_VERSION=$(echo $NDK | awk -F\; '{print $2}') && \
     echo "Installing $NDK" && \
     . /etc/jdk.env && \
-    yes | "$ANDROID_HOME"/cmdline-tools/latest/bin/sdkmanager "$NDK" > /dev/null && \
+    yes | $ANDROID_SDK_MANAGER "$NDK" > /dev/null && \
     ln -sv $ANDROID_HOME/ndk/${NDK_VERSION} ${ANDROID_NDK}
 
 # List sdk and ndk directory content
