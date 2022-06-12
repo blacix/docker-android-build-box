@@ -13,7 +13,7 @@ ENV ANDROID_HOME="/opt/android-sdk" \
 # support amd64 and arm64
 RUN JDK_PLATFORM=$(if [ "$(uname -m)" = "aarch64" ]; then echo "arm64"; else echo "amd64"; fi) && \
     echo export JDK_PLATFORM=$JDK_PLATFORM >> /etc/jdk.env && \
-    echo export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-$JDK_PLATFORM/" >> /etc/jdk.env && \
+    echo export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-$JDK_PLATFORM/" >> /etc/jdk.env && \
     echo . /etc/jdk.env >> /etc/bash.bashrc && \
     echo . /etc/jdk.env >> /etc/profile
 
@@ -47,44 +47,47 @@ ENV ANDROID_NDK_HOME="$ANDROID_NDK"
 ENV PATH="$JAVA_HOME/bin:$PATH:$ANDROID_SDK_HOME/emulator:$ANDROID_SDK_HOME/cmdline-tools/latest/bin:$ANDROID_SDK_HOME/tools:$ANDROID_SDK_HOME/platform-tools:$ANDROID_NDK:$FLUTTER_HOME/bin:$FLUTTER_HOME/bin/cache/dart-sdk/bin"
 
 WORKDIR /tmp
-
+    
+        
 # Installing packages
-RUN apt-get update -qq > /dev/null && \
+RUN dpkg --add-architecture i386 && apt-get update -qq > /dev/null && \
     apt-get install -qq locales > /dev/null && \
     locale-gen "$LANG" > /dev/null && \
     apt-get install -qq --no-install-recommends \
+        libc6:i386 libncurses5:i386 libstdc++6:i386 lib32z1 libbz2-1.0:i386 \
         autoconf \
         build-essential \
         cmake \
-        curl \
-        file \
+        # curl \
+        # file \
         git \
-        gpg-agent \
-        less \
-        libc6-dev \
-        libgmp-dev \
-        libmpc-dev \
-        libmpfr-dev \
-        libxslt-dev \
-        libxml2-dev \
-        m4 \
-        ncurses-dev \
-        ocaml \
-        openjdk-8-jdk \
+        # gpg-agent \
+        # less \
+        # libc6-dev \
+        # libgmp-dev \
+        # libmpc-dev \
+        # libmpfr-dev \
+        # libxslt-dev \
+        # libxml2-dev \
+        # m4 \
+        # ncurses-dev \
+        # ocaml \
+        # openjdk-8-jdk \
         openjdk-11-jdk \
-        openssh-client \
+        # openssh-client \
         pkg-config \
-        ruby-full \
+        # ruby-full \
         software-properties-common \
-        tzdata \
+        # tzdata \
         unzip \
-        vim-tiny \
+        # vim-tiny \
         wget \
         zip \
         zipalign \
-        s3cmd \
-        python \
-        zlib1g-dev > /dev/null && \
+        # s3cmd \
+        # python \
+        # zlib1g-dev > /dev/null && \
+        && \
     echo "JVM directories: `ls -l /usr/lib/jvm/`" && \
     . /etc/jdk.env && \
     echo "Java version (default):" && \
@@ -139,7 +142,7 @@ RUN mkdir --parents "$ANDROID_HOME/.android/" && \
     echo '### User Sources for Android SDK Manager' > \
         "$ANDROID_HOME/.android/repositories.cfg" && \
     . /etc/jdk.env && \
-    yes | "$ANDROID_HOME"/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null
+    yes | "$ANDROID_HOME"/cmdline-tools/latest/bin/sdkmanager --licenses
 
 # List all available packages.
 # redirect to a temp file `packages.txt` for later use and avoid show progress
@@ -248,7 +251,7 @@ RUN git clone https://github.com/jenv/jenv.git ~/.jenv && \
     . ~/.bash_profile && \
     . /etc/jdk.env && \
     java -version && \
-    jenv add /usr/lib/jvm/java-8-openjdk-$JDK_PLATFORM && \
+    # jenv add /usr/lib/jvm/java-8-openjdk-$JDK_PLATFORM && \
     jenv add /usr/lib/jvm/java-11-openjdk-$JDK_PLATFORM && \
     jenv versions && \
     jenv global 11 && \
