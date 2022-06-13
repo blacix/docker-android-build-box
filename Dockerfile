@@ -4,8 +4,8 @@ FROM ubuntu:20.04
 ENV ANDROID_HOME="/opt/android-sdk" \
     ANDROID_SDK_HOME="/opt/android-sdk" \
     ANDROID_SDK_ROOT="/opt/android-sdk" \
-    ANDROID_NDK="/opt/android-sdk/ndk/current" \
-    ANDROID_NDK_ROOT="/opt/android-sdk/ndk/current" \
+    ANDROID_NDK="/opt/android-sdk/ndk/latest" \
+    ANDROID_NDK_ROOT="/opt/android-sdk/ndk/latest" \
     FLUTTER_HOME="/opt/flutter"
 ENV ANDROID_SDK_MANAGER=${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager
 
@@ -114,7 +114,7 @@ RUN echo "emulator" && \
     if [ "$(uname -m)" != "x86_64" ]; then echo "emulator only support Linux x86 64bit. skip for $(uname -m)"; exit 0; fi && \
     . /etc/jdk.env && \
     yes | $ANDROID_SDK_MANAGER "emulator" > /dev/null && \
-    $ANDROID_SDK_MANAGER --uninstall emulator
+    # $ANDROID_SDK_MANAGER --uninstall emulator
 
 RUN echo "bundletool" && \
     wget -q https://github.com/google/bundletool/releases/download/1.9.1/bundletool-all-1.9.1.jar -O bundletool.jar && \
