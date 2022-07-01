@@ -42,7 +42,7 @@ RUN dpkg --add-architecture i386 && apt-get update -qq > /dev/null && \
         openjdk-11-jdk \
         unzip \
         wget \
-        # zipalign \
+        zipalign \
         && \
     echo "JVM directories: `ls -l /usr/lib/jvm/`" && \
     . /etc/jdk.env && \
