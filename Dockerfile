@@ -113,7 +113,7 @@ RUN echo "build tools 33.0.0" && \
 RUN echo "emulator" && \
     if [ "$(uname -m)" != "x86_64" ]; then echo "emulator only support Linux x86 64bit. skip for $(uname -m)"; exit 0; fi && \
     . /etc/jdk.env && \
-    yes | $ANDROID_SDK_MANAGER "emulator" > /dev/null && \
+    yes | $ANDROID_SDK_MANAGER "emulator" > /dev/null
     # $ANDROID_SDK_MANAGER --uninstall emulator
 
 RUN echo "bundletool" && \
