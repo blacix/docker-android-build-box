@@ -28,7 +28,8 @@ ENV DEBIAN_FRONTEND="noninteractive" \
     TERM=dumb \
     DEBIAN_FRONTEND=noninteractive
 
-ENV PATH="$JAVA_HOME/bin:$PATH:$ANDROID_SDK_HOME/emulator:$ANDROID_SDK_HOME/cmdline-tools/latest/bin:$ANDROID_SDK_HOME/tools:$ANDROID_SDK_HOME/platform-tools:$ANDROID_NDK:$FLUTTER_HOME/bin:$FLUTTER_HOME/bin/cache/dart-sdk/bin"
+# TODO build-tools version path
+ENV PATH="$JAVA_HOME/bin:$PATH:$ANDROID_SDK_HOME/emulator:$ANDROID_SDK_HOME/build-tools/30.0.3:$ANDROID_SDK_HOME/cmdline-tools/latest/bin:$ANDROID_SDK_HOME/tools:$ANDROID_SDK_HOME/platform-tools:$ANDROID_NDK:$FLUTTER_HOME/bin:$FLUTTER_HOME/bin/cache/dart-sdk/bin"
 
 WORKDIR /tmp
     
@@ -97,9 +98,10 @@ RUN echo "platform tools" && \
 RUN echo "build tools 33.0.0" && \
     . /etc/jdk.env && \
     yes | $ANDROID_SDK_MANAGER \
-        "build-tools;33.0.0" \
+        # "build-tools;33.0.0" \
         # "build-tools;32.0.0" "build-tools;31.0.0" \
         # "build-tools;30.0.0" "build-tools;30.0.2" "build-tools;30.0.3" \
+        "build-tools;30.0.3" \
         # "build-tools;29.0.3" "build-tools;29.0.2" \
         # "build-tools;28.0.3" "build-tools;28.0.2" \
         # "build-tools;27.0.3" "build-tools;27.0.2" "build-tools;27.0.1" \
