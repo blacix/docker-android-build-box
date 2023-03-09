@@ -45,6 +45,8 @@ ENV DEBIAN_FRONTEND="noninteractive" \
 ENV ANDROID_SDK_HOME="$ANDROID_HOME"
 ENV ANDROID_NDK_HOME="$ANDROID_NDK"
 
+# TODO build tools path
+# ENV PATH="$JAVA_HOME/bin:$PATH:$ANDROID_SDK_HOME/emulator:$ANDROID_SDK_HOME/build-tools/30.0.3:$ANDROID_SDK_HOME/cmdline-tools/latest/bin:$ANDROID_SDK_HOME/tools:$ANDROID_SDK_HOME/platform-tools:$ANDROID_NDK:$FLUTTER_HOME/bin:$FLUTTER_HOME/bin/cache/dart-sdk/bin"
 ENV PATH="$JAVA_HOME/bin:$PATH:$ANDROID_SDK_HOME/emulator:$ANDROID_SDK_HOME/cmdline-tools/latest/bin:$ANDROID_SDK_HOME/tools:$ANDROID_SDK_HOME/platform-tools:$ANDROID_NDK:$FLUTTER_HOME/bin:$FLUTTER_HOME/bin/cache/dart-sdk/bin"
 
 WORKDIR /tmp
@@ -60,67 +62,68 @@ RUN apt-get update -qq > /dev/null && \
         curl \
         file \
         git \
-        git-lfs \
-        gpg-agent \
-        less \
-        libc6-dev \
-        libgmp-dev \
-        libmpc-dev \
-        libmpfr-dev \
-        libxslt-dev \
-        libxml2-dev \
-        m4 \
-        ncurses-dev \
-        ocaml \
-        openjdk-8-jdk \
-        openjdk-11-jdk \
+        # git-lfs \
+        # gpg-agent \
+        # less \
+        # libc6-dev \
+        # libgmp-dev \
+        # libmpc-dev \
+        # libmpfr-dev \
+        # libxslt-dev \
+        # libxml2-dev \
+        # m4 \
+        # ncurses-dev \
+        # ocaml \
+        # openjdk-8-jdk \
+        # openjdk-11-jdk \
         openjdk-17-jdk \
-        openssh-client \
-        pkg-config \
-        ruby-full \
-        software-properties-common \
-        tzdata \
+        # openssh-client \
+        # pkg-config \
+        # ruby-full \
+        # software-properties-common \
+        # tzdata \
         unzip \
-        vim-tiny \
+        # vim-tiny \
         wget \
         zip \
         zipalign \
-        s3cmd \
-        python \
-        python3-pip \
-        zlib1g-dev > /dev/null && \
-    git lfs install > /dev/null && \
+    #     s3cmd \
+    #     python \
+    #     python3-pip \
+    #     zlib1g-dev > /dev/null && \
+        && \
+    # git lfs install > /dev/null && \
     echo "JVM directories: `ls -l /usr/lib/jvm/`" && \
     . /etc/jdk.env && \
     echo "Java version (default):" && \
     java -version && \
     echo "set timezone" && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
-    echo "nodejs, npm, cordova, ionic, react-native" && \
-    curl -sL -k https://deb.nodesource.com/setup_${NODE_VERSION} \
-        | bash - > /dev/null && \
-    apt-get install -qq nodejs > /dev/null && \
-    curl -sS -k https://dl.yarnpkg.com/debian/pubkey.gpg \
-        | apt-key add - > /dev/null && \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" \
-        | tee /etc/apt/sources.list.d/yarn.list > /dev/null && \
-    apt-get update -qq > /dev/null && \
-    apt-get install -qq yarn > /dev/null && \
-    rm -rf /var/lib/apt/lists/ && \
-    npm install --quiet -g npm > /dev/null && \
-    npm install --quiet -g \
-        bower \
-        cordova \
-        eslint \
-        gulp \
-        ionic \
-        jshint \
-        karma-cli \
-        mocha \
-        node-gyp \
-        npm-check-updates \
-        react-native-cli > /dev/null && \
-    npm cache clean --force > /dev/null && \
+    # echo "nodejs, npm, cordova, ionic, react-native" && \
+    # curl -sL -k https://deb.nodesource.com/setup_${NODE_VERSION} \
+    #     | bash - > /dev/null && \
+    # apt-get install -qq nodejs > /dev/null && \
+    # curl -sS -k https://dl.yarnpkg.com/debian/pubkey.gpg \
+    #     | apt-key add - > /dev/null && \
+    # echo "deb https://dl.yarnpkg.com/debian/ stable main" \
+    #     | tee /etc/apt/sources.list.d/yarn.list > /dev/null && \
+    # apt-get update -qq > /dev/null && \
+    # apt-get install -qq yarn > /dev/null && \
+    # rm -rf /var/lib/apt/lists/ && \
+    # npm install --quiet -g npm > /dev/null && \
+    # npm install --quiet -g \
+    #     bower \
+    #     cordova \
+    #     eslint \
+    #     gulp \
+    #     ionic \
+    #     jshint \
+    #     karma-cli \
+    #     mocha \
+    #     node-gyp \
+    #     npm-check-updates \
+    #     react-native-cli > /dev/null && \
+    # npm cache clean --force > /dev/null && \
     apt-get -y clean && apt-get -y autoremove && rm -rf /var/lib/apt/lists/* && \
     rm -rf /tmp/* /var/tmp/*
 
@@ -143,7 +146,7 @@ RUN mkdir --parents "$ANDROID_HOME/.android/" && \
     echo '### User Sources for Android SDK Manager' > \
         "$ANDROID_HOME/.android/repositories.cfg" && \
     . /etc/jdk.env && \
-    yes | $ANDROID_SDK_MANAGER --licenses > /dev/null
+    yes | $ANDROID_SDK_MANAGER --licenses
 
 # List all available packages.
 # redirect to a temp file `packages.txt` for later use and avoid show progress
@@ -158,13 +161,13 @@ RUN echo "platforms" && \
     . /etc/jdk.env && \
     yes | $ANDROID_SDK_MANAGER \
         "platforms;android-33" \
-        "platforms;android-32" \
-        "platforms;android-31" \
-        "platforms;android-30" \
-        "platforms;android-29" \
-        "platforms;android-28" \
-        "platforms;android-27" \
-        "platforms;android-26" \
+        # "platforms;android-32" \
+        # "platforms;android-31" \
+        # "platforms;android-30" \
+        # "platforms;android-29" \
+        # "platforms;android-28" \
+        # "platforms;android-27" \
+        # "platforms;android-26" \
         > /dev/null
 
 RUN echo "platform tools" && \
@@ -176,13 +179,14 @@ RUN echo "build tools 26-30" && \
     . /etc/jdk.env && \
     yes | $ANDROID_SDK_MANAGER \
         "build-tools;33.0.0" \
-        "build-tools;32.0.0" \
-        "build-tools;31.0.0" \
-        "build-tools;30.0.0" "build-tools;30.0.2" "build-tools;30.0.3" \
-        "build-tools;29.0.3" "build-tools;29.0.2" \
-        "build-tools;28.0.3" "build-tools;28.0.2" \
-        "build-tools;27.0.3" "build-tools;27.0.2" "build-tools;27.0.1" \
-        "build-tools;26.0.2" "build-tools;26.0.1" "build-tools;26.0.0" > /dev/null
+        # "build-tools;32.0.0" \
+        # "build-tools;31.0.0" \
+        # "build-tools;30.0.0" "build-tools;30.0.2" "build-tools;30.0.3" \
+        # "build-tools;29.0.3" "build-tools;29.0.2" \
+        # "build-tools;28.0.3" "build-tools;28.0.2" \
+        # "build-tools;27.0.3" "build-tools;27.0.2" "build-tools;27.0.1" \
+        # "build-tools;26.0.2" "build-tools;26.0.1" "build-tools;26.0.0" \ 
+        > /dev/null
 
 # seems there is no emulator on arm64
 # Warning: Failed to find package emulator
@@ -217,7 +221,7 @@ RUN du -sh $ANDROID_HOME
 RUN echo "Flutter sdk" && \
     if [ "$(uname -m)" != "x86_64" ]; then echo "Flutter only support Linux x86 64bit. skip for $(uname -m)"; exit 0; fi && \
     cd /opt && \
-    wget --quiet https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.0.4-stable.tar.xz -O flutter.tar.xz && \
+    wget --quiet https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.7.7-stable.tar.xz -O flutter.tar.xz && \
     tar xf flutter.tar.xz && \
     git config --global --add safe.directory $FLUTTER_HOME && \
     flutter config --no-analytics && \
@@ -227,38 +231,38 @@ RUN echo "Flutter sdk" && \
 RUN mkdir -p $ANDROID_HOME/licenses
 COPY sdk/licenses/* $ANDROID_HOME/licenses/
 
-# Create some jenkins required directory to allow this image run with Jenkins
-RUN mkdir -p /var/lib/jenkins/workspace && \
-    mkdir -p /home/jenkins && \
-    chmod 777 /home/jenkins && \
-    chmod 777 /var/lib/jenkins/workspace && \
-    chmod -R 775 $ANDROID_HOME
+# # Create some jenkins required directory to allow this image run with Jenkins
+# RUN mkdir -p /var/lib/jenkins/workspace && \
+#     mkdir -p /home/jenkins && \
+#     chmod 777 /home/jenkins && \
+#     chmod 777 /var/lib/jenkins/workspace && \
+#     chmod -R 775 $ANDROID_HOME
 
-COPY Gemfile /Gemfile
+# COPY Gemfile /Gemfile
 
-RUN echo "fastlane" && \
-    cd / && \
-    gem install bundler --quiet --no-document > /dev/null && \
-    mkdir -p /.fastlane && \
-    chmod 777 /.fastlane && \
-    bundle install --quiet
+# RUN echo "fastlane" && \
+#     cd / && \
+#     gem install bundler --quiet --no-document > /dev/null && \
+#     mkdir -p /.fastlane && \
+#     chmod 777 /.fastlane && \
+#     bundle install --quiet
 
-# Add jenv to control which version of java to use, default to 17.
-ENV PATH="/root/.jenv/shims:/root/.jenv/bin${PATH:+:${PATH}}"
-RUN git clone https://github.com/jenv/jenv.git ~/.jenv && \
-    echo '#!/usr/bin/env bash' >> ~/.bash_profile && \
-    echo 'eval "$(jenv init -)"' >> ~/.bash_profile && \
-    . ~/.bash_profile && \
-    . /etc/jdk.env && \
-    java -version && \
-    jenv add /usr/lib/jvm/java-8-openjdk-$JDK_PLATFORM && \
-    jenv add /usr/lib/jvm/java-11-openjdk-$JDK_PLATFORM && \
-    jenv add /usr/lib/jvm/java-17-openjdk-$JDK_PLATFORM && \
-    jenv versions && \
-    jenv global 17.0 && \
-    java -version
+# # Add jenv to control which version of java to use, default to 17.
+# ENV PATH="/root/.jenv/shims:/root/.jenv/bin${PATH:+:${PATH}}"
+# RUN git clone https://github.com/jenv/jenv.git ~/.jenv && \
+#     echo '#!/usr/bin/env bash' >> ~/.bash_profile && \
+#     echo 'eval "$(jenv init -)"' >> ~/.bash_profile && \
+#     . ~/.bash_profile && \
+#     . /etc/jdk.env && \
+#     java -version && \
+#     jenv add /usr/lib/jvm/java-8-openjdk-$JDK_PLATFORM && \
+#     jenv add /usr/lib/jvm/java-11-openjdk-$JDK_PLATFORM && \
+#     jenv add /usr/lib/jvm/java-17-openjdk-$JDK_PLATFORM && \
+#     jenv versions && \
+#     jenv global 17.0 && \
+#     java -version
 
-COPY README.md /README.md
+# COPY README.md /README.md
 
 ARG BUILD_DATE=""
 ARG SOURCE_BRANCH=""
