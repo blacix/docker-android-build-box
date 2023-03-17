@@ -275,7 +275,7 @@ ENV BUILD_DATE=${BUILD_DATE} \
     DOCKER_TAG=${DOCKER_TAG}
 
 WORKDIR /project
-RUN chmod -R a+rwx /project ${FLUTTER_HOME}
+# RUN chmod -R a+rwx /project ${FLUTTER_HOME}
 
 # labels, see http://label-schema.org/
 LABEL maintainer="Ming Chen"
