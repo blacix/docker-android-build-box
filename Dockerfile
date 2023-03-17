@@ -275,6 +275,7 @@ ENV BUILD_DATE=${BUILD_DATE} \
     DOCKER_TAG=${DOCKER_TAG}
 
 WORKDIR /project
+RUN chmod a+rwx /project
 
 # labels, see http://label-schema.org/
 LABEL maintainer="Ming Chen"
